@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Boba } from './boba.entity';
 import { Repository } from 'typeorm';
-import { CreateBobaInput } from './create-boba.input';
+import { BobaInput } from './boba.input';
 import { v4 as uuid } from 'uuid';
 
 @Injectable()
@@ -15,8 +15,12 @@ export class BobaService {
     return this.bobaRespository.find();
   }
 
-  async createBoba(createBobaInput: CreateBobaInput): Promise<Boba> {
-    const { name, shop, rating, description } = createBobaInput;
+  async getBoba(id: string): Promise<Boba> {
+    return this.bobaRespository.findOne({ id });
+  }
+
+  async createBoba(bobaInput: BobaInput): Promise<Boba> {
+    const { name, shop, rating, description } = bobaInput;
 
     const boba = this.bobaRespository.create({
       id: uuid(),
@@ -29,4 +33,18 @@ export class BobaService {
 
     return this.bobaRespository.save(boba);
   }
+
+  async updateBoba(id: string, bobaInput: BobaInput): Promise<Boba> {
+    const foundBoba = await this.getBoba(id);
+
+    for (const key in bobaInput) {
+      if (bobaInput[key] !== foundBoba[key]) {
+        foundBoba[key] = bobaInput[key];
+      }
+    }
+
+    return this.bobaRespository.save(foundBoba);
+  }
+
+  // async deleteBoba() {}
 }
