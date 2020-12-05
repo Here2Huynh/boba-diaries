@@ -1,9 +1,11 @@
 import { Module } from '@nestjs/common';
-import { BobaController } from './boba.resolver';
+import { BobaResolver } from './boba.resolver';
 import { BobaService } from './boba.service';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { Boba } from './boba.entity';
 
 @Module({
-  controllers: [BobaController],
-  providers: [BobaService],
+  imports: [TypeOrmModule.forFeature([Boba])],
+  providers: [BobaService, BobaResolver],
 })
 export class BobaModule {}
