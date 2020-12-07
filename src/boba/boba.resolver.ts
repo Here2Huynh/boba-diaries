@@ -2,7 +2,8 @@
 import { BobaType } from './boba.type';
 import { Resolver, Mutation, Args, Query } from '@nestjs/graphql/dist';
 import { BobaService } from './boba.service';
-import { BobaInput } from './boba.input';
+import { CreateBobaInput } from './create-boba.input';
+import { UpdateBobaInput } from './update-boba.input';
 
 @Resolver((of) => BobaType)
 export class BobaResolver {
@@ -19,14 +20,14 @@ export class BobaResolver {
   }
 
   @Mutation((returns) => BobaType)
-  async createBoba(@Args('createBobaInput') bobaInput: BobaInput) {
+  async createBoba(@Args('createBobaInput') bobaInput: CreateBobaInput) {
     return this.bobaService.createBoba(bobaInput);
   }
 
   @Mutation((returns) => BobaType)
   async updateBoba(
     @Args('id') id: string,
-    @Args('updateBobaInput') bobaInput: BobaInput,
+    @Args('updateBobaInput') bobaInput: UpdateBobaInput,
   ) {
     return this.bobaService.updateBoba(id, bobaInput);
   }

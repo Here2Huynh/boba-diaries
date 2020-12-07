@@ -2,7 +2,7 @@ import { InputType, Field } from '@nestjs/graphql/dist';
 import { MinLength, IsDate } from 'class-validator';
 
 @InputType()
-export class BobaInput {
+export class CreateBobaInput {
   @MinLength(1)
   @Field()
   name: string;
