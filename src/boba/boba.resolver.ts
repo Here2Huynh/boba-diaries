@@ -31,4 +31,9 @@ export class BobaResolver {
   ) {
     return this.bobaService.updateBoba(id, bobaInput);
   }
+
+  @Mutation((returns) => String)
+  async deleteBoba(@Args('id') id: string) {
+    return this.bobaService.deleteBoba(id);
+  }
 }

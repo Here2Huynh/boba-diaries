@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Boba } from './boba.entity';
 import { Repository } from 'typeorm';
@@ -47,5 +47,17 @@ export class BobaService {
     return this.bobaRespository.save(foundBoba);
   }
 
-  // async deleteBoba() {}
+  async deleteBoba(id: string): Promise<string> {
+    const foundBoba = await this.getBoba(id);
+    if (foundBoba) {
+      return await this.bobaRespository
+        .delete({ id })
+        .then(() => `Deleted boba: "${foundBoba.name}"`);
+    } else {
+      throw new NotFoundException(`Boba with ${id} not found`);
+    }
+  }
 }
+
+// functionality to add
+// handle multiple id's for update and delete

@@ -17,8 +17,4 @@ export class CreateBobaInput {
 
   @Field()
   description: string;
-
-  @IsDate()
-  @Field()
-  date: string;
 }
