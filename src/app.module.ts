@@ -3,6 +3,7 @@ import { GraphQLModule } from '@nestjs/graphql/dist';
 import { BobaModule } from './boba/boba.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Boba } from './boba/boba.entity';
+import { AuthModule } from './auth/auth.module';
 
 @Module({
   imports: [
@@ -17,6 +18,7 @@ import { Boba } from './boba/boba.entity';
       autoSchemaFile: true,
     }),
     BobaModule,
+    AuthModule,
   ],
   controllers: [],
   providers: [],
