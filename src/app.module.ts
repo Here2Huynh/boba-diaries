@@ -4,6 +4,7 @@ import { BobaModule } from './boba/boba.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Boba } from './boba/boba.entity';
 import { AuthModule } from './auth/auth.module';
+import { User } from './auth/user.entity';
 
 @Module({
   imports: [
@@ -12,7 +13,7 @@ import { AuthModule } from './auth/auth.module';
       url: 'mongodb;//localhost/boba',
       synchronize: true,
       useUnifiedTopology: true,
-      entities: [Boba],
+      entities: [Boba, User],
     }),
     GraphQLModule.forRoot({
       autoSchemaFile: true,
