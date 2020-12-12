@@ -3,6 +3,9 @@ import { AuthService } from './auth.service';
 import { CreateUserInput } from './create-user.input';
 import { UserType } from './user.type';
 import { SignInUserInput } from './signin-user.input';
+import { JwtType } from './jwt-token-return.type';
+import { UseGuards } from '@nestjs/common';
+import { AuthGuard } from '@nestjs/passport';
 
 @Resolver((of) => UserType)
 export class AuthResolver {
@@ -13,14 +16,21 @@ export class AuthResolver {
     return this.userService.signUp(userInput);
   }
 
-  @Mutation((returns) => UserType)
+  @Mutation((returns) => JwtType)
   async signIn(@Args('userSignIn') userSignIn: SignInUserInput) {
     return this.userService.signIn(userSignIn);
+  }
+
+  @Mutation((returns) => UserType)
+  // @UseGuards(AuthGuard())
+  async test(@Args('jwtToken') jwtToken: string) {
+    console.log('jwtToken', jwtToken);
   }
 }
 
 // features to add
-// - add password encrpytion
-// - add signIn functionality
+// x - add password encrpytion
+// x - add signIn functionality
+
 // - link user to boba
 // - add JWT functionality
