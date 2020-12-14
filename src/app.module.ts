@@ -17,6 +17,7 @@ import { User } from './auth/user.entity';
     }),
     GraphQLModule.forRoot({
       autoSchemaFile: true,
+      context: ({ req }) => ({ headers: req.headers }),
     }),
     BobaModule,
     AuthModule,

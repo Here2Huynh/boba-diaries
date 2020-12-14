@@ -6,7 +6,10 @@ export class User {
   @ObjectIdColumn()
   _id: string;
 
-  @PrimaryColumn()
+  @PrimaryColumn('uuid')
+  id: string;
+
+  @Column()
   username: string;
 
   @Column()

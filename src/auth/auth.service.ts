@@ -7,6 +7,7 @@ import { SignInUserInput } from './signin-user.input';
 import * as bcrypt from 'bcryptjs';
 import { JwtPayload } from './jwt-payload.interface';
 import { JwtService } from '@nestjs/jwt';
+import { v4 as uuid } from 'uuid';
 
 @Injectable()
 export class AuthService {
@@ -23,6 +24,7 @@ export class AuthService {
     const salt = await bcrypt.genSalt();
 
     const user = this.authRepository.create({
+      id: uuid(),
       username,
       salt,
       password: await this.hashPassword(password, salt),

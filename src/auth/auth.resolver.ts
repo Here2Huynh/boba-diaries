@@ -1,11 +1,11 @@
-import { Resolver, Mutation, Args } from '@nestjs/graphql/dist';
+import { Resolver, Mutation, Args, Query } from '@nestjs/graphql/dist';
 import { AuthService } from './auth.service';
 import { CreateUserInput } from './create-user.input';
 import { UserType } from './user.type';
 import { SignInUserInput } from './signin-user.input';
 import { JwtType } from './jwt-token-return.type';
 import { UseGuards } from '@nestjs/common';
-import { AuthGuard } from '@nestjs/passport';
+import { AuthGuard } from './auth.guard';
 
 @Resolver((of) => UserType)
 export class AuthResolver {
@@ -21,10 +21,10 @@ export class AuthResolver {
     return this.userService.signIn(userSignIn);
   }
 
-  @Mutation((returns) => UserType)
-  // @UseGuards(AuthGuard())
-  async test(@Args('jwtToken') jwtToken: string) {
-    console.log('jwtToken', jwtToken);
+  @Query((returns) => String)
+  @UseGuards(AuthGuard)
+  async test() {
+    return 'jwtToken';
   }
 }
 
