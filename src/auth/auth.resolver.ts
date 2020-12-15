@@ -31,6 +31,5 @@ export class AuthResolver {
 // features to add
 // x - add password encrpytion
 // x - add signIn functionality
-
 // - link user to boba
-// - add JWT functionality
+// x - add JWT functionality

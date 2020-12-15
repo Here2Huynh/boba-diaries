@@ -8,6 +8,7 @@ import * as bcrypt from 'bcryptjs';
 import { JwtPayload } from './jwt-payload.interface';
 import { JwtService } from '@nestjs/jwt';
 import { v4 as uuid } from 'uuid';
+import { ConfigService } from '@nestjs/config';
 
 @Injectable()
 export class AuthService {
@@ -16,6 +17,7 @@ export class AuthService {
   constructor(
     @InjectRepository(User) private authRepository: Repository<User>,
     private jwtService: JwtService,
+    private configService: ConfigService,
   ) {}
 
   async signUp(userInput: CreateUserInput): Promise<CreateUserInput> {
@@ -41,7 +43,8 @@ export class AuthService {
     }
 
     const payload: JwtPayload = { username: foundUser.username };
-    const accessToken = await this.jwtService.sign(payload);
+    const accessToken = this.jwtService.sign(payload);
+
     this.logger.debug(
       `Generated JWT for payload: ${JSON.stringify(accessToken)}`,
     );
