@@ -17,4 +17,7 @@ export class CreateBobaInput {
 
   @Field()
   description: string;
+
+  @Field()
+  date: string;
 }

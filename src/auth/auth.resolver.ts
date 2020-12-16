@@ -33,3 +33,5 @@ export class AuthResolver {
 // x - add signIn functionality
 // - link user to boba
 // x - add JWT functionality
+// - add testing to all the modules
+// - implement lists of boba

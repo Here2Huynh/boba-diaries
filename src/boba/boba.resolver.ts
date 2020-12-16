@@ -4,26 +4,32 @@ import { Resolver, Mutation, Args, Query } from '@nestjs/graphql/dist';
 import { BobaService } from './boba.service';
 import { CreateBobaInput } from './create-boba.input';
 import { UpdateBobaInput } from './update-boba.input';
+import { UseGuards } from '@nestjs/common';
+import { AuthGuard } from '../auth/auth.guard';
 
 @Resolver((of) => BobaType)
 export class BobaResolver {
   constructor(private bobaService: BobaService) {}
 
+  @UseGuards(AuthGuard)
   @Query((returns) => BobaType)
   async boba(@Args('id') id: string) {
     return this.bobaService.getBoba(id);
   }
 
+  @UseGuards(AuthGuard)
   @Query((returns) => [BobaType])
   async bobas() {
     return this.bobaService.getBobas();
   }
 
+  @UseGuards(AuthGuard)
   @Mutation((returns) => BobaType)
   async createBoba(@Args('createBobaInput') bobaInput: CreateBobaInput) {
     return this.bobaService.createBoba(bobaInput);
   }
 
+  @UseGuards(AuthGuard)
   @Mutation((returns) => BobaType)
   async updateBoba(
     @Args('id') id: string,
@@ -32,6 +38,7 @@ export class BobaResolver {
     return this.bobaService.updateBoba(id, bobaInput);
   }
 
+  @UseGuards(AuthGuard)
   @Mutation((returns) => String)
   async deleteBoba(@Args('id') id: string) {
     return this.bobaService.deleteBoba(id);

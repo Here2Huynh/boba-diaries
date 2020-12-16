@@ -3,8 +3,4 @@ import { CreateBobaInput } from './create-boba.input';
 import { MinLength } from 'class-validator';
 
 @InputType()
-export class UpdateBobaInput extends PartialType(CreateBobaInput) {
-  @MinLength(1)
-  @Field()
-  date: string;
-}
+export class UpdateBobaInput extends PartialType(CreateBobaInput) {}
