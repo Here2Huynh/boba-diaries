@@ -1,4 +1,5 @@
 import { Field, ObjectType } from '@nestjs/graphql/dist';
+import { BobaType } from '../boba/boba.type';
 
 @ObjectType()
 export class UserType {
@@ -7,4 +8,7 @@ export class UserType {
 
   @Field()
   password: string;
+
+  @Field((type) => [BobaType])
+  bobas: string[];
 }

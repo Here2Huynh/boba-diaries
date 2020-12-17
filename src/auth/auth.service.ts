@@ -1,4 +1,9 @@
-import { Injectable, UnauthorizedException, Logger } from '@nestjs/common';
+import {
+  Injectable,
+  UnauthorizedException,
+  Logger,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from './user.entity';
 import { Repository } from 'typeorm';
@@ -30,6 +35,7 @@ export class AuthService {
       username,
       salt,
       password: await this.hashPassword(password, salt),
+      bobas: [],
     });
 
     return this.authRepository.save(user);
@@ -66,5 +72,17 @@ export class AuthService {
 
   private async hashPassword(password: string, salt: string): Promise<string> {
     return bcrypt.hash(password, salt);
+  }
+
+  async assignBobaToStudent(userId: string, bobaIds: string[]) {
+    const foundUser = await this.authRepository.findOne({ id: userId });
+
+    if (foundUser) {
+      foundUser.bobas = [...foundUser.bobas, ...bobaIds];
+
+      return this.authRepository.save(foundUser);
+    } else {
+      throw new NotFoundException('User not found');
+    }
   }
 }
