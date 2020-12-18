@@ -4,10 +4,9 @@ import { AuthResolver } from './auth.resolver';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { User } from './user.entity';
 import { JwtModule } from '@nestjs/jwt';
-import { PassportModule, AuthGuard } from '@nestjs/passport';
-import { JwtStrategy } from './jwt.strategy';
-// import * as config from 'config';
+import { PassportModule } from '@nestjs/passport';
 import { ConfigService, ConfigModule } from '@nestjs/config';
+import { BobaModule } from '../boba/boba.module';
 
 // const jwtConfig = config.get('jwt');
 
@@ -28,8 +27,9 @@ import { ConfigService, ConfigModule } from '@nestjs/config';
     }),
     TypeOrmModule.forFeature([User]),
     ConfigModule,
+    BobaModule,
   ],
   providers: [AuthService, AuthResolver],
-  exports: [PassportModule, JwtModule],
+  exports: [PassportModule, AuthService, JwtModule],
 })
 export class AuthModule {}

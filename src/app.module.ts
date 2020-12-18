@@ -31,7 +31,6 @@ import { config } from './config';
       context: ({ req }) => ({ headers: req.headers }),
     }),
     BobaModule,
-    AuthModule,
   ],
   controllers: [],
   providers: [],

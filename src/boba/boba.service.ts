@@ -57,4 +57,14 @@ export class BobaService {
       throw new NotFoundException(`Boba with ${id} not found`);
     }
   }
+
+  async getManyBobas(bobaIds: string[]): Promise<Boba[]> {
+    return this.bobaRespository.find({
+      where: {
+        id: {
+          $in: bobaIds,
+        },
+      },
+    });
+  }
 }

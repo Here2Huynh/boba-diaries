@@ -8,13 +8,16 @@ import {
 } from '@nestjs/common';
 import { GqlExecutionContext } from '@nestjs/graphql/dist';
 import { ConfigService } from '@nestjs/config';
+import { AuthGuard } from '@nestjs/passport';
 
 @Injectable()
-export class AuthGuard implements CanActivate {
+export class UserGuard extends AuthGuard('jwt') {
   constructor(
     private configService: ConfigService,
     private jwtService: JwtService,
-  ) {}
+  ) {
+    super();
+  }
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
     const ctx = GqlExecutionContext.create(context).getContext();
