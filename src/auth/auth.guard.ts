@@ -1,6 +1,5 @@
 import { JwtService } from '@nestjs/jwt';
 import {
-  CanActivate,
   ExecutionContext,
   HttpException,
   HttpStatus,
@@ -11,12 +10,18 @@ import { ConfigService } from '@nestjs/config';
 import { AuthGuard } from '@nestjs/passport';
 
 @Injectable()
-export class UserGuard extends AuthGuard('jwt') {
+export class GqlAuthGuard extends AuthGuard('jwt') {
   constructor(
     private configService: ConfigService,
     private jwtService: JwtService,
   ) {
     super();
+  }
+
+  async getRequest(context: ExecutionContext) {
+    const ctx = GqlExecutionContext.create(context);
+
+    return ctx.getContext().req;
   }
 
   async canActivate(context: ExecutionContext): Promise<boolean> {

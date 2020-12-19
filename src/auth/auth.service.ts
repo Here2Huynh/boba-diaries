@@ -74,7 +74,7 @@ export class AuthService {
     return bcrypt.hash(password, salt);
   }
 
-  async assignBobaToStudent(userId: string, bobaIds: string[]) {
+  async assignBobaToStudent(userId: string, bobaIds: string[]): Promise<User> {
     const foundUser = await this.authRepository.findOne({ id: userId });
 
     if (foundUser) {

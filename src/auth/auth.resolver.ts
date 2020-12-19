@@ -12,12 +12,12 @@ import { UserType } from './user.type';
 import { SignInUserInput } from './signin-user.input';
 import { JwtType } from './jwt-token-return.type';
 import { UseGuards } from '@nestjs/common';
-import { UserGuard } from './auth.guard';
+import { GqlAuthGuard } from './auth.guard';
 import { AssignBobaToStudentInput } from './assign-bobas-to-user.input';
 import { ReturnUserType } from './update-user.type';
 import { BobaService } from '../boba/boba.service';
-import { Boba } from '../boba/boba.entity';
 import { User } from './user.entity';
+import { BobaType } from '../boba/boba.type';
 
 @Resolver((of) => UserType)
 export class AuthResolver {
@@ -46,12 +46,12 @@ export class AuthResolver {
   }
 
   @Query((returns) => String)
-  @UseGuards(UserGuard)
+  @UseGuards(GqlAuthGuard)
   async test() {
     return 'jwtToken';
   }
 
-  @ResolveField()
+  @ResolveField((returns) => BobaType)
   async getManyBobas(@Parent() user: User) {
     return this.bobaService.getManyBobas(user.bobas);
   }
