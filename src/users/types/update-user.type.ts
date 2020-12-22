@@ -1,5 +1,5 @@
 import { ObjectType, Field, ID } from '@nestjs/graphql/dist';
-import { BobaType } from '../boba/boba.type';
+import { BobaType } from '../../boba/boba.type';
 
 @ObjectType()
 export class ReturnUserType {

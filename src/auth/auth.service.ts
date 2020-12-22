@@ -5,10 +5,10 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { User } from './user.entity';
+import { User } from '../users/user.entity';
 import { Repository } from 'typeorm';
-import { CreateUserInput } from './create-user.input';
-import { SignInUserInput } from './signin-user.input';
+import { CreateUserInput } from '../users/inputs/create-user.input';
+import { SignInUserInput as UserLoginInput } from '../users/inputs/signin-user.input';
 import * as bcrypt from 'bcryptjs';
 import { JwtPayload } from './jwt-payload.interface';
 import { JwtService } from '@nestjs/jwt';
@@ -41,8 +41,8 @@ export class AuthService {
     return this.authRepository.save(user);
   }
 
-  async signIn(userSignIn: SignInUserInput): Promise<{ accessToken: string }> {
-    const foundUser = await this.validateUserPassword(userSignIn);
+  async login(userLoginIn: UserLoginInput): Promise<{ accessToken: string }> {
+    const foundUser = await this.validateUser(userLoginIn);
 
     if (!foundUser) {
       throw new UnauthorizedException('Invalid credentials');
@@ -58,8 +58,8 @@ export class AuthService {
     return { accessToken };
   }
 
-  async validateUserPassword(userSignIn: SignInUserInput): Promise<User> {
-    const { username, password } = userSignIn;
+  async validateUser(userLoginIn: UserLoginInput): Promise<User> {
+    const { username, password } = userLoginIn;
 
     const foundUser = await this.authRepository.findOne({ username });
 

@@ -6,8 +6,9 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 
 import { Boba } from './boba/boba.entity';
 import { AuthModule } from './auth/auth.module';
-import { User } from './auth/user.entity';
+import { User } from './users/user.entity';
 import { config } from './config';
+import { UsersModule } from './users/users.module';
 
 @Module({
   imports: [
@@ -32,8 +33,10 @@ import { config } from './config';
     }),
     BobaModule,
     AuthModule,
+    UsersModule,
   ],
   controllers: [],
   providers: [],
+  exports: [AuthModule],
 })
 export class AppModule {}

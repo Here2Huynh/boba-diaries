@@ -7,16 +7,16 @@ import {
   Parent,
 } from '@nestjs/graphql/dist';
 import { AuthService } from './auth.service';
-import { CreateUserInput } from './create-user.input';
-import { UserType } from './user.type';
-import { SignInUserInput } from './signin-user.input';
-import { JwtType } from './jwt-token-return.type';
+import { CreateUserInput } from '../users/inputs/create-user.input';
+import { UserType } from '../users/types/user.type';
+import { SignInUserInput } from '../users/inputs/signin-user.input';
+import { JwtType } from './types/jwt-token-return.type';
 import { UseGuards } from '@nestjs/common';
-import { GqlAuthGuard } from './auth.guard';
-import { AssignBobaToStudentInput } from './assign-bobas-to-user.input';
-import { ReturnUserType } from './update-user.type';
+import { GqlAuthGuard } from './guards/jwt-auth.guard';
+import { AssignBobaToStudentInput } from '../users/inputs/assign-bobas-to-user.input';
+import { ReturnUserType } from '../users/types/update-user.type';
 import { BobaService } from '../boba/boba.service';
-import { User } from './user.entity';
+import { User } from '../users/user.entity';
 import { BobaType } from '../boba/boba.type';
 
 @Resolver((of) => UserType)
@@ -33,7 +33,7 @@ export class AuthResolver {
 
   @Mutation((returns) => JwtType)
   async signIn(@Args('userSignIn') userSignIn: SignInUserInput) {
-    return this.userService.signIn(userSignIn);
+    return this.userService.login(userSignIn);
   }
 
   @Mutation((returns) => ReturnUserType)
