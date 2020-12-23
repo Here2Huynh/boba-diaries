@@ -1,48 +1,21 @@
-import {
-  Injectable,
-  UnauthorizedException,
-  Logger,
-  NotFoundException,
-} from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { User } from '../users/user.entity';
-import { Repository } from 'typeorm';
-import { CreateUserInput } from '../users/inputs/create-user.input';
-import { SignInUserInput as UserLoginInput } from '../users/inputs/signin-user.input';
-import * as bcrypt from 'bcryptjs';
-import { JwtPayload } from './jwt-payload.interface';
+import { Injectable, UnauthorizedException, Logger } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
-import { v4 as uuid } from 'uuid';
-import { ConfigService } from '@nestjs/config';
+
+import { UserLoginInput } from '../users/inputs/signin-user.input';
+import { JwtPayload } from './jwt-payload.interface';
+import { UsersService } from '../users/users.service';
 
 @Injectable()
 export class AuthService {
   private logger = new Logger('AuthService');
 
   constructor(
-    @InjectRepository(User) private authRepository: Repository<User>,
-    private jwtService: JwtService,
-    private configService: ConfigService,
+    private readonly jwtService: JwtService,
+    private readonly usersService: UsersService,
   ) {}
 
-  async signUp(userInput: CreateUserInput): Promise<CreateUserInput> {
-    const { username, password } = userInput;
-
-    const salt = await bcrypt.genSalt();
-
-    const user = this.authRepository.create({
-      id: uuid(),
-      username,
-      salt,
-      password: await this.hashPassword(password, salt),
-      bobas: [],
-    });
-
-    return this.authRepository.save(user);
-  }
-
   async login(userLoginIn: UserLoginInput): Promise<{ accessToken: string }> {
-    const foundUser = await this.validateUser(userLoginIn);
+    const foundUser = await this.usersService.validateUser(userLoginIn);
 
     if (!foundUser) {
       throw new UnauthorizedException('Invalid credentials');
@@ -56,33 +29,5 @@ export class AuthService {
     );
 
     return { accessToken };
-  }
-
-  async validateUser(userLoginIn: UserLoginInput): Promise<User> {
-    const { username, password } = userLoginIn;
-
-    const foundUser = await this.authRepository.findOne({ username });
-
-    if (foundUser && (await foundUser.validatePassword(password))) {
-      return foundUser;
-    } else {
-      return null;
-    }
-  }
-
-  private async hashPassword(password: string, salt: string): Promise<string> {
-    return bcrypt.hash(password, salt);
-  }
-
-  async assignBobaToStudent(userId: string, bobaIds: string[]): Promise<User> {
-    const foundUser = await this.authRepository.findOne({ id: userId });
-
-    if (foundUser) {
-      foundUser.bobas = [...foundUser.bobas, ...bobaIds];
-
-      return this.authRepository.save(foundUser);
-    } else {
-      throw new NotFoundException('User not found');
-    }
   }
 }

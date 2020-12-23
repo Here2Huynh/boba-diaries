@@ -1,14 +1,16 @@
 import { Module } from '@nestjs/common';
-import { AuthService } from './auth.service';
-import { AuthResolver } from './auth.resolver';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { User } from '../users/user.entity';
 import { JwtModule } from '@nestjs/jwt';
 import { PassportModule } from '@nestjs/passport';
 import { ConfigService, ConfigModule } from '@nestjs/config';
-import { BobaModule } from '../boba/boba.module';
+
+import { AuthService } from './auth.service';
+import { User } from '../users/user.entity';
 import { JwtStrategy } from './strategies/jwt.strategy';
 import { LocalStrategy } from './strategies/local.strategy';
+import { UsersModule } from '../users/users.module';
+import { BobaModule } from '../boba/boba.module';
+import { AuthResolver } from './auth.resolver';
 
 @Module({
   imports: [
@@ -27,9 +29,11 @@ import { LocalStrategy } from './strategies/local.strategy';
     }),
     TypeOrmModule.forFeature([User]),
     ConfigModule,
+    UsersModule,
+    BobaModule,
   ],
-  providers: [AuthService, JwtStrategy],
-  exports: [AuthService, JwtStrategy],
+  providers: [AuthService, AuthResolver, JwtStrategy],
+  exports: [AuthService, AuthResolver, JwtStrategy],
 })
 export class AuthModule {}
 

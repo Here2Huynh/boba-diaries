@@ -1,14 +1,14 @@
 import { Module } from '@nestjs/common';
 import { GraphQLModule } from '@nestjs/graphql/dist';
-import { BobaModule } from './boba/boba.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 
 import { Boba } from './boba/boba.entity';
+import { BobaModule } from './boba/boba.module';
 import { AuthModule } from './auth/auth.module';
 import { User } from './users/user.entity';
-import { config } from './config';
 import { UsersModule } from './users/users.module';
+import { config } from './config';
 
 @Module({
   imports: [
@@ -31,12 +31,12 @@ import { UsersModule } from './users/users.module';
       autoSchemaFile: true,
       context: ({ req }) => ({ headers: req.headers }),
     }),
-    BobaModule,
-    AuthModule,
     UsersModule,
+    AuthModule,
+    BobaModule,
   ],
   controllers: [],
   providers: [],
-  exports: [AuthModule],
+  exports: [],
 })
 export class AppModule {}
