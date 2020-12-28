@@ -3,16 +3,27 @@ DONE:
 [FEATURE] - add password encrpytion
 [FEATURE] - add signIn functionality
 [FEATURE] - add JWT functionality
+[BUG] - JWT guards are structured wrong
+[BUG] - all endpoints are guarded with no public endpoints
+
+- added public decorator
+- added public access to login endpoint for now
 
 TODO:
 
 [BUG] - no checks for duplicate usernames
 [FEATURE] - add testing to all the modules
+[FEATURE] - add whoAmI query from the context
 [FEATURE] - implement lists of boba
+[FEATURE] - add guards to users resolver
+[FEATURE] - Yelp linkage
+
+- external module
+- api calls and auth for Yelp
+
+[FEATURE] - boba profiling logic, suggestion
 
 IN PROGRESS:
-
-[BUG] - JWT guards are structured wrong
 
 [FEATURE] - link user to boba
 

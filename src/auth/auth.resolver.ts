@@ -7,11 +7,13 @@ import { AuthService } from './auth.service';
 import { UserType } from '../users/types/user.type';
 import { JwtType } from './types/jwt-token-return.type';
 import { UserLoginInput } from '../users/inputs/signin-user.input';
+import { Public } from './decorators/public.decorator';
 
 @Resolver((of) => UserType)
 export class AuthResolver {
   constructor(private userService: AuthService) {}
 
+  @Public()
   @Mutation((returns) => JwtType)
   async login(@Args('userSignIn') userLogin: UserLoginInput) {
     return this.userService.login(userLogin);

@@ -5,6 +5,7 @@ import {
   Args,
   Parent,
 } from '@nestjs/graphql/dist';
+import { Query } from '@nestjs/common';
 
 import { UserType } from './types/user.type';
 import { CreateUserInput } from './inputs/create-user.input';
@@ -14,6 +15,7 @@ import { BobaType } from '../boba/boba.type';
 import { User } from './user.entity';
 import { UsersService } from './users.service';
 import { BobaService } from '../boba/boba.service';
+import { CurrentUser } from './decorators/current-user.decorator';
 
 @Resolver((of) => UserType)
 export class UserResolver {
@@ -40,4 +42,9 @@ export class UserResolver {
   async getManyBobas(@Parent() user: User) {
     return this.bobaService.getManyBobas(user.bobas);
   }
+
+  // @Query((returns) => UserType)
+  // async whoAmI(@CurrentUser() user: User): Promise<User> {
+  //   return this.userService.findUser(user);
+  // }
 }

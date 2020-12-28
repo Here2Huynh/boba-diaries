@@ -1,4 +1,3 @@
-import { JwtService } from '@nestjs/jwt';
 import {
   ExecutionContext,
   HttpException,
@@ -8,13 +7,17 @@ import {
 import { GqlExecutionContext } from '@nestjs/graphql/dist';
 import { ConfigService } from '@nestjs/config';
 import { AuthGuard } from '@nestjs/passport';
+import { Reflector } from '@nestjs/core';
 
 import * as jwt from 'jsonwebtoken';
+
+import { IS_PUBLIC_KEY } from '../decorators/public.decorator';
 
 @Injectable()
 export class GqlAuthGuard extends AuthGuard('jwt') {
   constructor(
-    private configService: ConfigService, // private jwtService: JwtService,
+    private configService: ConfigService,
+    private reflector: Reflector,
   ) {
     super();
   }
@@ -26,11 +29,16 @@ export class GqlAuthGuard extends AuthGuard('jwt') {
   }
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
+    const isPublic = this.reflector.getAllAndOverride<boolean>(IS_PUBLIC_KEY, [
+      context.getHandler(),
+      context.getClass(),
+    ]);
+
+    if (isPublic) return true;
+
     const ctx = GqlExecutionContext.create(context).getContext();
 
-    if (!ctx.headers.authorization) {
-      return false;
-    }
+    if (!ctx.headers.authorization) return false;
 
     ctx.user = await this.validateToken(ctx.headers.authorization);
 
@@ -46,7 +54,6 @@ export class GqlAuthGuard extends AuthGuard('jwt') {
 
     try {
       const secret = this.configService.get('JWT_SECRET');
-      // const decoded = await this.jwtService.verify(token, secret);
       const decoded = await jwt.verify(token, secret);
 
       return decoded;
