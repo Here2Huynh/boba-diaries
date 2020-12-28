@@ -35,8 +35,5 @@ import { config } from './config';
     AuthModule,
     BobaModule,
   ],
-  controllers: [],
-  providers: [],
-  exports: [],
 })
 export class AppModule {}

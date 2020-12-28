@@ -9,11 +9,12 @@ import { GqlExecutionContext } from '@nestjs/graphql/dist';
 import { ConfigService } from '@nestjs/config';
 import { AuthGuard } from '@nestjs/passport';
 
+import * as jwt from 'jsonwebtoken';
+
 @Injectable()
 export class GqlAuthGuard extends AuthGuard('jwt') {
   constructor(
-    private configService: ConfigService,
-    private jwtService: JwtService,
+    private configService: ConfigService, // private jwtService: JwtService,
   ) {
     super();
   }
@@ -45,7 +46,8 @@ export class GqlAuthGuard extends AuthGuard('jwt') {
 
     try {
       const secret = this.configService.get('JWT_SECRET');
-      const decoded = await this.jwtService.verify(token, secret);
+      // const decoded = await this.jwtService.verify(token, secret);
+      const decoded = await jwt.verify(token, secret);
 
       return decoded;
     } catch (err) {

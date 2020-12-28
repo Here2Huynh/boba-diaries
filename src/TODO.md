@@ -12,6 +12,8 @@ TODO:
 
 IN PROGRESS:
 
+[BUG] - JWT guards are structured wrong
+
 [FEATURE] - link user to boba
 
 - add resolve field to complete student to boba link

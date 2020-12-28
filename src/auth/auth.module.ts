@@ -9,7 +9,6 @@ import { User } from '../users/user.entity';
 import { JwtStrategy } from './strategies/jwt.strategy';
 import { LocalStrategy } from './strategies/local.strategy';
 import { UsersModule } from '../users/users.module';
-import { BobaModule } from '../boba/boba.module';
 import { AuthResolver } from './auth.resolver';
 
 @Module({
@@ -30,11 +29,8 @@ import { AuthResolver } from './auth.resolver';
     TypeOrmModule.forFeature([User]),
     ConfigModule,
     UsersModule,
-    BobaModule,
   ],
   providers: [AuthService, AuthResolver, JwtStrategy],
-  exports: [AuthService, AuthResolver, JwtStrategy],
+  exports: [AuthService, AuthResolver, JwtStrategy, PassportModule],
 })
 export class AuthModule {}
-
-// try adding JWT strat and module in here ?

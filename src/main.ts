@@ -1,6 +1,6 @@
-import { JwtService, JwtModule } from '@nestjs/jwt';
-import { ConfigService, ConfigModule } from '@nestjs/config';
+import { ConfigService } from '@nestjs/config';
 import { NestFactory } from '@nestjs/core';
+
 import { AppModule } from './app.module';
 import { GqlAuthGuard } from './auth/guards/jwt-auth.guard';
 
@@ -10,24 +10,7 @@ async function bootstrap() {
   const configService = app.get(ConfigService);
   const port = configService.get('PORT');
 
-  // const jwtModule = app.get(JwtModule)
-
-  // JwtModule.registerAsync({
-  //   imports: [ConfigModule],
-  //   useFactory: async (configService: ConfigService) => {
-  //     return {
-  //       secret: configService.get<string>('JWT_SECRET'),
-  //       signOptions: {
-  //         expiresIn: 3600,
-  //       },
-  //     };
-  //   },
-  //   inject: [ConfigService],
-  // });
-
-  // const jwtService = app.get(JwtService);
-
-  // app.useGlobalGuards(new GqlAuthGuard(configService, jwtService));
+  app.useGlobalGuards(new GqlAuthGuard(configService));
 
   await app.listen(port);
 }
