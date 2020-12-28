@@ -4,4 +4,5 @@ export const config = () => ({
     type: process.env.DB_TYPE,
     url: process.env.DB_URL,
   },
+  publicKey: process.env.PUBLIC_KEY,
 });
