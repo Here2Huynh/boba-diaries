@@ -1,4 +1,9 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  Injectable,
+  NotFoundException,
+  HttpException,
+  HttpStatus,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 
 import * as bcrypt from 'bcryptjs';
@@ -16,19 +21,28 @@ export class UsersService {
   ) {}
 
   async signUp(userInput: CreateUserInput): Promise<CreateUserInput> {
-    const { username, password } = userInput;
+    const { username, password, bobas } = userInput;
 
-    const salt = await bcrypt.genSalt();
+    const foundUser = await this.validateUser({ username, password });
 
-    const user = this.userRepository.create({
-      id: uuid(),
-      username,
-      salt,
-      password: await this.hashPassword(password, salt),
-      bobas: [],
-    });
+    if (foundUser) {
+      throw new HttpException(
+        `Username "${username}" exist. Please try another username.`,
+        HttpStatus.CONFLICT,
+      );
+    } else {
+      const salt = await bcrypt.genSalt();
 
-    return this.userRepository.save(user);
+      const user = this.userRepository.create({
+        id: uuid(),
+        username,
+        salt,
+        password: await this.hashPassword(password, salt),
+        bobas,
+      });
+
+      return this.userRepository.save(user);
+    }
   }
 
   private async hashPassword(password: string, salt: string): Promise<string> {
@@ -59,7 +73,7 @@ export class UsersService {
     }
   }
 
-  async findUser(user: User): Promise<User> {
-    return this.userRepository.findOne(user.id);
+  async findUser(userId: string): Promise<User> {
+    return this.userRepository.findOne(userId);
   }
 }

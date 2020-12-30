@@ -2,7 +2,7 @@ import { InputType, Field, ID } from '@nestjs/graphql/dist';
 import { IsUUID } from 'class-validator';
 
 @InputType()
-export class AssignBobaToStudentInput {
+export class AssignBobaToUserInput {
   @IsUUID()
   @Field((type) => ID)
   userId: string;

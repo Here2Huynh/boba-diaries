@@ -1,5 +1,11 @@
-import { InputType, Field } from '@nestjs/graphql/dist';
-import { MinLength, MaxLength, IsString, Matches } from 'class-validator';
+import { InputType, Field, ID } from '@nestjs/graphql/dist';
+import {
+  MinLength,
+  MaxLength,
+  IsString,
+  Matches,
+  IsUUID,
+} from 'class-validator';
 
 @InputType()
 export class CreateUserInput {
@@ -17,4 +23,8 @@ export class CreateUserInput {
   })
   @Field()
   password: string;
+
+  @IsUUID('4', { each: true })
+  @Field(() => [ID], { defaultValue: [] })
+  bobas: string[];
 }

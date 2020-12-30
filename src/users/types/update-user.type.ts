@@ -9,6 +9,6 @@ export class ReturnUserType {
   @Field()
   username: string;
 
-  @Field((type) => BobaType)
+  @Field((type) => [BobaType])
   bobas: string[];
 }
