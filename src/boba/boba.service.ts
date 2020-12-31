@@ -59,16 +59,12 @@ export class BobaService {
   }
 
   async getManyBobas(bobaIds: string[]): Promise<Boba[]> {
-    const res = this.bobaRespository.find({
+    return await this.bobaRespository.find({
       where: {
         id: {
           $in: bobaIds,
         },
       },
     });
-
-    console.log('res', res);
-
-    return res;
   }
 }

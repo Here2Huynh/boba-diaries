@@ -9,7 +9,6 @@ import {
 
 import { UserType } from './types/user.type';
 import { CreateUserInput } from './inputs/create-user.input';
-import { ReturnUserType } from './types/update-user.type';
 import { AssignBobaToUserInput } from './inputs/assign-bobas-to-user.input';
 import { BobaType } from '../boba/boba.type';
 import { User } from './user.entity';
@@ -31,7 +30,7 @@ export class UserResolver {
   }
 
   @Public()
-  @Mutation((returns) => ReturnUserType)
+  @Mutation((returns) => UserType)
   async signUp(@Args('userInput') userInput: CreateUserInput) {
     return this.userService.signUp(userInput);
   }
@@ -46,11 +45,10 @@ export class UserResolver {
     return this.userService.assignBobaToStudent(userId, bobaIds);
   }
 
-  // @ResolveField()
-  // async bobas(@Parent() user: User) {
-  //   console.log('user', user);
-  //   // return this.bobaService.getManyBobas(user.bobas);
-  // }
+  @ResolveField()
+  async bobas(@Parent() user: User) {
+    return this.bobaService.getManyBobas(user.bobas);
+  }
 
   // @Query((returns) => UserType)
   // async whoAmI(@CurrentUser() user: User): Promise<User> {

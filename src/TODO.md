@@ -9,10 +9,12 @@ DONE:
 - added public decorator
 - added public access to login endpoint for now
 
+[BUG] - no checks for duplicate usernames
+
 TODO:
 
-[BUG] - no checks for duplicate usernames
 [FEATURE] - add testing to all the modules
+[FEATURE] - delink boba from user
 [FEATURE] - add whoAmI query from the context
 [FEATURE] - implement lists of boba
 [FEATURE] - add guards to users resolver
@@ -29,3 +31,4 @@ IN PROGRESS:
 
 - add resolve field to complete student to boba link
 - running into bugs, fixing it
+- need to add logic to check for duplicate

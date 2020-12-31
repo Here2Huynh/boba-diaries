@@ -1,6 +1,6 @@
 import { ObjectType, Field } from '@nestjs/graphql/dist';
 
-@ObjectType()
+@ObjectType('Boba')
 export class BobaType {
   @Field()
   id: string;
