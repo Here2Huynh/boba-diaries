@@ -62,10 +62,10 @@ export class UsersService {
   }
 
   async assignBobaToStudent(userId: string, bobaIds: string[]): Promise<User> {
-    const foundUser = await this.userRepository.findOne({ id: userId });
+    const foundUser = await this.findUser(userId);
 
     if (foundUser) {
-      foundUser.bobas = [...foundUser.bobas, ...bobaIds];
+      foundUser.bobas = [...new Set([...foundUser.bobas, ...bobaIds])];
 
       return this.userRepository.save(foundUser);
     } else {
@@ -74,6 +74,6 @@ export class UsersService {
   }
 
   async findUser(userId: string): Promise<User> {
-    return this.userRepository.findOne(userId);
+    return this.userRepository.findOne({ id: userId });
   }
 }

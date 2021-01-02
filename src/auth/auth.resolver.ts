@@ -5,18 +5,18 @@ import { GqlAuthGuard } from './guards/jwt-auth.guard';
 
 import { AuthService } from './auth.service';
 import { UserType } from '../users/types/user.type';
-import { JwtType } from './types/jwt-token-return.type';
+import { AuthenicatedUserType } from './types/authenicated-user.type';
 import { UserLoginInput } from '../users/inputs/signin-user.input';
 import { Public } from './decorators/public.decorator';
 
 @Resolver((of) => UserType)
 export class AuthResolver {
-  constructor(private userService: AuthService) {}
+  constructor(private authService: AuthService) {}
 
   @Public()
-  @Mutation((returns) => JwtType)
+  @Mutation((returns) => AuthenicatedUserType)
   async login(@Args('userSignIn') userLogin: UserLoginInput) {
-    return this.userService.login(userLogin);
+    return this.authService.login(userLogin);
   }
 
   @Query((returns) => String)

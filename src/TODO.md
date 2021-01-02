@@ -19,6 +19,7 @@ TODO:
 [FEATURE] - implement lists of boba
 [FEATURE] - add guards to users resolver
 [FEATURE] - Yelp linkage
+[FEATURE] - add subscriber functionality
 
 - external module
 - api calls and auth for Yelp

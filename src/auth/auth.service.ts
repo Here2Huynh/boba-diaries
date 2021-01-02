@@ -4,6 +4,7 @@ import { JwtService } from '@nestjs/jwt';
 import { UserLoginInput } from '../users/inputs/signin-user.input';
 import { JwtPayload } from './jwt-payload.interface';
 import { UsersService } from '../users/users.service';
+import { IAuthenicatedUser } from './interfaces/authenicated-user.interface';
 
 @Injectable()
 export class AuthService {
@@ -14,7 +15,7 @@ export class AuthService {
     private readonly usersService: UsersService,
   ) {}
 
-  async login(userLoginIn: UserLoginInput): Promise<{ accessToken: string }> {
+  async login(userLoginIn: UserLoginInput): Promise<IAuthenicatedUser> {
     const foundUser = await this.usersService.validateUser(userLoginIn);
 
     if (!foundUser) {
@@ -28,6 +29,6 @@ export class AuthService {
       `Generated JWT for payload: ${JSON.stringify(accessToken)}`,
     );
 
-    return { accessToken };
+    return { id: foundUser.id, accessToken };
   }
 }

@@ -1,7 +1,10 @@
 import { Field, ObjectType } from '@nestjs/graphql/dist';
 
 @ObjectType()
-export class JwtType {
+export class AuthenicatedUserType {
+  @Field()
+  id: string;
+
   @Field()
   accessToken: string;
 }

@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { Field, ObjectType, ID } from '@nestjs/graphql/dist';
 import { BobaType } from '../../boba/boba.type';
 
