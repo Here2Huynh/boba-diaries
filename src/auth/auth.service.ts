@@ -16,19 +16,19 @@ export class AuthService {
   ) {}
 
   async login(userLoginIn: UserLoginInput): Promise<IAuthenicatedUser> {
-    const foundUser = await this.usersService.validateUser(userLoginIn);
+    const validatedUser = await this.usersService.validateUser(userLoginIn);
 
-    if (!foundUser) {
+    if (!validatedUser) {
       throw new UnauthorizedException('Invalid credentials');
     }
 
-    const payload: JwtPayload = { username: foundUser.username };
+    const payload: JwtPayload = { username: validatedUser.username };
     const accessToken = this.jwtService.sign(payload);
 
     this.logger.debug(
       `Generated JWT for payload: ${JSON.stringify(accessToken)}`,
     );
 
-    return { id: foundUser.id, accessToken };
+    return { id: validatedUser.id, accessToken };
   }
 }
