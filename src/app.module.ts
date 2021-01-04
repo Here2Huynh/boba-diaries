@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { Global, Module } from '@nestjs/common';
 import { GraphQLModule } from '@nestjs/graphql/dist';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule, ConfigService } from '@nestjs/config';
@@ -10,6 +10,7 @@ import { User } from './users/user.entity';
 import { UsersModule } from './users/users.module';
 import { config } from './config';
 
+@Global()
 @Module({
   imports: [
     ConfigModule.forRoot({

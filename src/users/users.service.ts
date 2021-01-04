@@ -8,16 +8,17 @@ import { InjectRepository } from '@nestjs/typeorm';
 
 import * as bcrypt from 'bcryptjs';
 import { v4 as uuid } from 'uuid';
-import { Repository } from 'typeorm';
+// import { Repository } from 'typeorm';
 
 import { User } from './user.entity';
 import { CreateUserInput } from './inputs/create-user.input';
 import { UserLoginInput } from './inputs/signin-user.input';
+import { UserRepository } from './users.repository';
 
 @Injectable()
 export class UsersService {
   constructor(
-    @InjectRepository(User) private readonly userRepository: Repository<User>,
+    @InjectRepository(User) private readonly userRepository: UserRepository,
   ) {}
 
   async signUp(userInput: CreateUserInput): Promise<CreateUserInput> {
