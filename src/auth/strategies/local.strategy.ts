@@ -3,7 +3,7 @@ import { UnauthorizedException } from '@nestjs/common';
 
 import { Strategy } from 'passport-jwt';
 
-import { User } from '../../users/user.entity';
+import { User } from '../../users/entities/user.entity';
 import { UsersService } from '../../users/users.service';
 
 export class LocalStrategy extends PassportStrategy(Strategy) {

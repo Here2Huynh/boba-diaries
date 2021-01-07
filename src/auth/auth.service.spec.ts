@@ -5,7 +5,7 @@ import { Repository } from 'typeorm';
 
 import { AuthService } from './auth.service';
 import { UsersService } from '../users/users.service';
-import { User } from '../users/user.entity';
+import { User } from '../users/entities/user.entity';
 import { UserRepository } from '../users/users.repository';
 import { JwtStrategy } from './strategies/jwt.strategy';
 import { ConfigModule, ConfigService } from '@nestjs/config';

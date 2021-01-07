@@ -1,7 +1,7 @@
 import { UnauthorizedException } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { Test } from '@nestjs/testing';
-import { User } from '../../users/user.entity';
+import { User } from '../../users/entities/user.entity';
 
 import { UserRepository } from '../../users/users.repository';
 import { JwtStrategy } from './jwt.strategy';

@@ -6,7 +6,7 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { Boba } from './boba/boba.entity';
 import { BobaModule } from './boba/boba.module';
 import { AuthModule } from './auth/auth.module';
-import { User } from './users/user.entity';
+import { User } from './users/entities/user.entity';
 import { UsersModule } from './users/users.module';
 import { config } from './config';
 
