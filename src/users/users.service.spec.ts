@@ -4,6 +4,11 @@ import { UsersService } from './users.service';
 import { UserRepository } from './users.repository';
 import { User } from './entities/user.entity';
 
+const mockCredentials = {
+  username: 'testUsername',
+  password: 'testPassword',
+};
+
 const mockUserRepository = () => ({
   findOne: jest.fn(),
 });
@@ -11,7 +16,6 @@ const mockUserRepository = () => ({
 const mockUserService = () => ({});
 
 describe('UsersService', () => {
-  let user: User;
   let userRepository;
   let userService: UsersService;
 
@@ -38,22 +42,40 @@ describe('UsersService', () => {
   });
 
   describe('validateUser', () => {
+    let user;
+
+    beforeEach(() => {
+      userRepository.findOne = jest.fn();
+
+      user = new User();
+      user.salt = 'testSalt';
+      user.validatePassword = jest.fn();
+    });
+
     it('returns user if user is valid', async () => {
-      const testUser = new User();
-      testUser.username = 'testUsername';
+      userRepository.findOne.mockResolvedValue(user);
+      user.validatePassword.mockResolvedValue(true);
 
-      userRepository.findOne.mockResolvedValue(testUser);
+      const result = await userService.validateUser(mockCredentials);
+      expect(result).toEqual(user);
+    });
 
-      // const res = await userService.validateUser({
-      //   username: 'testUsername',
-      //   password: 'testPassword',
-      // });
+    it('returns null if password is invalid', async () => {
+      userRepository.findOne.mockResolvedValue(user);
+      user.validatePassword.mockResolvedValue(false);
 
-      // expect(userRepository.findOne).toHaveBeenLastCalledWith({
-      //   username: 'testUsername',
-      // });
+      const result = await userService.validateUser(mockCredentials);
+      expect(user.validatePassword).toHaveBeenCalled();
+      expect(result).toBeNull();
+    });
 
-      // expect(res).toEqual(testUser);
+    it('returns null if username not found', async () => {
+      userRepository.findOne.mockResolvedValue(null);
+      user.validatePassword.mockResolvedValue(false);
+
+      const result = await userService.validateUser(mockCredentials);
+      expect(user.validatePassword).not.toHaveBeenCalled();
+      expect(result).toBeNull();
     });
   });
 });
