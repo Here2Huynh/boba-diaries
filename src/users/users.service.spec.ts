@@ -3,6 +3,8 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { UsersService } from './users.service';
 import { UserRepository } from './users.repository';
 import { User } from './entities/user.entity';
+import * as bcrypt from 'bcryptjs';
+import { HttpException, HttpStatus } from '@nestjs/common';
 
 const mockCredentials = {
   username: 'testUsername',
@@ -11,13 +13,14 @@ const mockCredentials = {
 
 const mockUserRepository = () => ({
   findOne: jest.fn(),
+  create: jest.fn(),
+  save: jest.fn(),
 });
 
-const mockUserService = () => ({});
-
 describe('UsersService', () => {
-  let userRepository;
-  let userService: UsersService;
+  let user: any;
+  let userRepository: any;
+  let userService: any;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -29,29 +32,15 @@ describe('UsersService', () => {
 
     userRepository = module.get<UserRepository>(UserRepository);
     userService = module.get<UsersService>(UsersService);
-  });
 
-  describe('signUp', () => {
-    it('checks if user exists, if so, returns Conflict error', async () => {
-      //
-    });
+    // userRepository.findOne = jest.fn();
 
-    it('if user does not exist, create user', async () => {
-      //
-    });
+    user = new User();
+    user.salt = 'testSalt';
+    user.validatePassword = jest.fn();
   });
 
   describe('validateUser', () => {
-    let user;
-
-    beforeEach(() => {
-      userRepository.findOne = jest.fn();
-
-      user = new User();
-      user.salt = 'testSalt';
-      user.validatePassword = jest.fn();
-    });
-
     it('returns user if user is valid', async () => {
       userRepository.findOne.mockResolvedValue(user);
       user.validatePassword.mockResolvedValue(true);
@@ -76,6 +65,50 @@ describe('UsersService', () => {
       const result = await userService.validateUser(mockCredentials);
       expect(user.validatePassword).not.toHaveBeenCalled();
       expect(result).toBeNull();
+    });
+  });
+
+  describe('findUser', () => {
+    it('returns user if userId is valid', async () => {
+      userRepository.findOne.mockResolvedValue(user);
+
+      const res = await userService.findUser('1234-123-123');
+      expect(res).toEqual(user);
+    });
+
+    it('return null if userId is invalid', async () => {
+      userRepository.findOne.mockResolvedValue(null);
+
+      const res = await userService.findUser('1234-123-123');
+      expect(res).toBeNull();
+    });
+  });
+
+  describe('hashPassword', () => {
+    it('calls bcrypt.hash and returns', async () => {
+      bcrypt.hash = jest.fn().mockResolvedValue('testHash');
+      expect(bcrypt.hash).not.toHaveBeenCalled();
+
+      const res = await userService.hashPassword('testPassword', 'testSalt');
+
+      expect(bcrypt.hash).toHaveBeenCalledWith('testPassword', 'testSalt');
+      expect(res).toEqual('testHash');
+    });
+  });
+
+  describe('signUp', () => {
+    it('throws HTTP exception if username exists', async () => {
+      userService.validateUser = jest.fn().mockResolvedValue('testUser');
+
+      const res = await userService.signUp(mockCredentials);
+      expect(userService.validateUser).toHaveBeenCalled();
+      expect(await userService.signUp(mockCredentials)).rejects.toThrow(
+        HttpException,
+      );
+    });
+
+    it('if username does not exist, create user entity', async () => {
+      //
     });
   });
 });
