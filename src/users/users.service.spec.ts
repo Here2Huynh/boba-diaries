@@ -4,7 +4,12 @@ import { UsersService } from './users.service';
 import { UserRepository } from './users.repository';
 import { User } from './entities/user.entity';
 import * as bcrypt from 'bcryptjs';
-import { HttpException, HttpStatus } from '@nestjs/common';
+import {
+  ConflictException,
+  HttpException,
+  HttpStatus,
+  InternalServerErrorException,
+} from '@nestjs/common';
 
 const mockCredentials = {
   username: 'testUsername',
@@ -98,17 +103,30 @@ describe('UsersService', () => {
 
   describe('signUp', () => {
     it('throws HTTP exception if username exists', async () => {
-      userService.validateUser = jest.fn().mockResolvedValue('testUser');
-
-      const res = await userService.signUp(mockCredentials);
-      expect(userService.validateUser).toHaveBeenCalled();
-      expect(await userService.signUp(mockCredentials)).rejects.toThrow(
-        HttpException,
+      userService.validateUser = jest.fn().mockResolvedValue(null);
+      expect(userService.signUp(mockCredentials)).rejects.toThrow(
+        ConflictException,
       );
     });
 
     it('if username does not exist, create user entity', async () => {
-      //
+      userService.validateUser = jest.fn().mockResolvedValue(null);
+      userRepository.create.mockResolvedValue({});
+      userService.hashPassword = jest.fn().mockResolvedValue('testHash');
+      bcrypt.genSalt = jest.fn().mockResolvedValue('testSalt');
+      userRepository.save.mockResolvedValue(mockCredentials);
+
+      const res = await userService.signUp(mockCredentials);
+
+      expect(userService.validateUser).toHaveBeenCalled();
+      expect(bcrypt.genSalt).toHaveBeenCalled();
+      expect(userRepository.create).toHaveBeenCalled();
+      expect(userService.hashPassword).toHaveBeenCalledWith(
+        'testPassword',
+        'testSalt',
+      );
+      expect(userRepository.save).toHaveBeenCalled();
+      expect(res).toEqual(mockCredentials);
     });
   });
 });

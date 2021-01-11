@@ -1,8 +1,7 @@
 import {
   Injectable,
   NotFoundException,
-  HttpException,
-  HttpStatus,
+  ConflictException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 
@@ -27,9 +26,8 @@ export class UsersService {
     const foundUser = await this.validateUser({ username, password });
 
     if (foundUser) {
-      throw new HttpException(
+      throw new ConflictException(
         `Username "${username}" exist. Please try another username.`,
-        HttpStatus.CONFLICT,
       );
     } else {
       const salt = await bcrypt.genSalt();
