@@ -60,7 +60,7 @@ export class UsersService {
     }
   }
 
-  async assignBobaToStudent(userId: string, bobaIds: string[]): Promise<User> {
+  async assignBobaToUser(userId: string, bobaIds: string[]): Promise<User> {
     const foundUser = await this.findUser(userId);
 
     if (foundUser) {

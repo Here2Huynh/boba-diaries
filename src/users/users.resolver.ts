@@ -43,7 +43,7 @@ export class UserResolver {
   ) {
     const { userId, bobaIds } = assignBobaToUserInput;
 
-    return this.userService.assignBobaToStudent(userId, bobaIds);
+    return this.userService.assignBobaToUser(userId, bobaIds);
   }
 
   @ResolveField()

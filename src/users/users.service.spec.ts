@@ -129,4 +129,14 @@ describe('UsersService', () => {
       expect(res).toEqual(mockCredentials);
     });
   });
+
+  describe('assignBobaToStudent', () => {
+    it('returns user, if found matching user ', () => {
+      //
+    });
+
+    it('returns not found exception, if not matching user', () => {
+      //
+    });
+  });
 });
