@@ -4,12 +4,7 @@ import { UsersService } from './users.service';
 import { UserRepository } from './users.repository';
 import { User } from './entities/user.entity';
 import * as bcrypt from 'bcryptjs';
-import {
-  ConflictException,
-  HttpException,
-  HttpStatus,
-  InternalServerErrorException,
-} from '@nestjs/common';
+import { ConflictException, NotFoundException } from '@nestjs/common';
 
 const mockCredentials = {
   username: 'testUsername',
@@ -38,11 +33,10 @@ describe('UsersService', () => {
     userRepository = module.get<UserRepository>(UserRepository);
     userService = module.get<UsersService>(UsersService);
 
-    // userRepository.findOne = jest.fn();
-
     user = new User();
     user.salt = 'testSalt';
     user.validatePassword = jest.fn();
+    user.bobas = [];
   });
 
   describe('validateUser', () => {
@@ -102,8 +96,9 @@ describe('UsersService', () => {
   });
 
   describe('signUp', () => {
-    it('throws HTTP exception if username exists', async () => {
+    it('throws conflict exception if username exists', async () => {
       userService.validateUser = jest.fn().mockResolvedValue(null);
+
       expect(userService.signUp(mockCredentials)).rejects.toThrow(
         ConflictException,
       );
@@ -131,12 +126,26 @@ describe('UsersService', () => {
   });
 
   describe('assignBobaToStudent', () => {
-    it('returns user, if found matching user ', () => {
-      //
+    it('returns user, if found matching user ', async () => {
+      userService.findUser = jest.fn().mockResolvedValue(user);
+      userRepository.save.mockResolvedValue(user);
+
+      const result = await userService.assignBobaToUser('123-123', [
+        '234-234',
+        '345-345',
+      ]);
+
+      expect(userService.findUser).toHaveBeenCalledWith('123-123');
+      expect(user.bobas).toEqual(['234-234', '345-345']);
+      expect(result).toEqual(user);
     });
 
-    it('returns not found exception, if not matching user', () => {
-      //
+    it('returns not found exception, if not matching user', async () => {
+      userService.findUser = jest.fn().mockResolvedValue(null);
+
+      expect(
+        userService.assignBobaToUser('123-123', ['234-234', '345-345']),
+      ).rejects.toThrow(NotFoundException);
     });
   });
 });

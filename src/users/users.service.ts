@@ -25,11 +25,7 @@ export class UsersService {
 
     const foundUser = await this.validateUser({ username, password });
 
-    if (foundUser) {
-      throw new ConflictException(
-        `Username "${username}" exist. Please try another username.`,
-      );
-    } else {
+    if (!foundUser) {
       const salt = await bcrypt.genSalt();
 
       const user = this.userRepository.create({
@@ -41,6 +37,10 @@ export class UsersService {
       });
 
       return this.userRepository.save(user);
+    } else {
+      throw new ConflictException(
+        `Username "${username}" exist. Please try another username.`,
+      );
     }
   }
 
