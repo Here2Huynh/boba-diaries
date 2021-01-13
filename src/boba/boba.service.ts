@@ -2,16 +2,16 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 
 import { v4 as uuid } from 'uuid';
-import { Repository } from 'typeorm';
 
 import { Boba } from './boba.entity';
 import { CreateBobaInput } from './create-boba.input';
 import { UpdateBobaInput } from './update-boba.input';
+import { BobaRepository } from './boba.repository';
 
 @Injectable()
 export class BobaService {
   constructor(
-    @InjectRepository(Boba) private bobaRespository: Repository<Boba>,
+    @InjectRepository(Boba) private bobaRespository: BobaRepository,
   ) {}
 
   async getBobas(): Promise<Boba[]> {
