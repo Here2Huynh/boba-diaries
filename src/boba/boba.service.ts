@@ -40,13 +40,17 @@ export class BobaService {
   async updateBoba(id: string, bobaInput: UpdateBobaInput): Promise<Boba> {
     const foundBoba = await this.getBoba(id);
 
-    for (const key in bobaInput) {
-      if (bobaInput[key] !== foundBoba[key]) {
-        foundBoba[key] = bobaInput[key];
+    if (foundBoba) {
+      for (const key in bobaInput) {
+        if (bobaInput[key] !== foundBoba[key]) {
+          foundBoba[key] = bobaInput[key];
+        }
       }
-    }
 
-    return this.bobaRespository.save(foundBoba);
+      return this.bobaRespository.save(foundBoba);
+    } else {
+      throw new NotFoundException(`Boba with ${id} not found`);
+    }
   }
 
   async deleteBoba(id: string): Promise<string> {

@@ -1,3 +1,4 @@
+import { NotFoundException } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 import { BobaRepository } from './boba.repository';
 import { BobaService } from './boba.service';
@@ -6,11 +7,15 @@ const mockBoba = {
   id: '1',
   name: 'name',
   rating: '5',
+  shop: 'shop',
+  description: 'test',
 };
 
 const mockBobaRepository = () => ({
   findOne: jest.fn(),
   find: jest.fn(),
+  create: jest.fn(),
+  save: jest.fn(),
 });
 
 describe('BobaService', () => {
@@ -50,6 +55,31 @@ describe('BobaService', () => {
   });
 
   describe('createBoba', () => {
-    //
+    it('returns a boba entry once boba is created', async () => {
+      bobaRepository.create.mockResolvedValue(mockBoba);
+
+      const res = await bobaService.createBoba(mockBoba);
+      expect(bobaRepository.create).toHaveBeenCalled();
+      expect(bobaRepository.save).toHaveBeenCalled();
+    });
+  });
+
+  describe('updateBoba', () => {
+    it('returns the updated boba', async () => {
+      mockBoba.rating = '9';
+      bobaService.getBoba = jest.fn().mockResolvedValue(mockBoba);
+
+      const res = await bobaService.updateBoba('1', mockBoba);
+      expect(bobaService.getBoba).toHaveBeenCalledWith('1');
+      expect(bobaRepository.save).toHaveBeenCalledWith(mockBoba);
+    });
+
+    it('returns undefined if found no matching boba', async () => {
+      bobaService.getBoba = jest.fn().mockResolvedValue(undefined);
+
+      expect(bobaService.updateBoba('1', mockBoba)).rejects.toThrow(
+        NotFoundException,
+      );
+    });
   });
 });
