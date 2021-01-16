@@ -69,7 +69,7 @@ describe('BobaService', () => {
       mockBoba.rating = '9';
       bobaService.getBoba = jest.fn().mockResolvedValue(mockBoba);
 
-      const res = await bobaService.updateBoba('1', mockBoba);
+      await bobaService.updateBoba('1', mockBoba);
       expect(bobaService.getBoba).toHaveBeenCalledWith('1');
       expect(bobaRepository.save).toHaveBeenCalledWith(mockBoba);
     });
@@ -80,6 +80,24 @@ describe('BobaService', () => {
       expect(bobaService.updateBoba('1', mockBoba)).rejects.toThrow(
         NotFoundException,
       );
+    });
+
+    describe('deleteBoba', () => {
+      it('returns message if boba exists and gets deleted', async () => {
+        bobaService.getBoba = jest.fn().mockResolvedValue(mockBoba);
+        bobaRepository.delete = jest.fn().mockResolvedValue(true);
+
+        const res = await bobaService.deleteBoba('12-34');
+        expect(bobaService.getBoba).toHaveBeenCalledWith('12-34');
+        expect(bobaRepository.delete).toHaveBeenCalledWith({ id: '12-34' });
+        expect(res).toEqual(`Deleted boba: "name"`);
+      });
+    });
+
+    describe('getManyBobas', () => {
+      it('', async () => {
+        //
+      });
     });
   });
 });
