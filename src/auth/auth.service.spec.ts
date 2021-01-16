@@ -1,18 +1,13 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { JwtModule, JwtService } from '@nestjs/jwt';
-
-import { Repository } from 'typeorm';
+import { ConfigModule, ConfigService } from '@nestjs/config';
+import { PassportModule } from '@nestjs/passport';
+import { UnauthorizedException } from '@nestjs/common';
 
 import { AuthService } from './auth.service';
 import { UsersService } from '../users/users.service';
-import { User } from '../users/entities/user.entity';
 import { UserRepository } from '../users/users.repository';
 import { JwtStrategy } from './strategies/jwt.strategy';
-import { ConfigModule, ConfigService } from '@nestjs/config';
-import { PassportModule } from '@nestjs/passport';
-import { UsersModule } from '../users/users.module';
-import { TypeOrmModule } from '@nestjs/typeorm';
-import { Boba } from '../boba/boba.entity';
 
 const mockedUserCredentials = {
   username: 'TestUsername',
@@ -22,57 +17,63 @@ const mockedUserCredentials = {
 describe('AuthService', () => {
   let authService: AuthService;
   let userService: UsersService;
-  // let jwtService: JwtService;
+  let jwtService;
 
   beforeEach(async () => {
-    // const module: TestingModule = await Test.createTestingModule({
-    //   imports: [
-    //     PassportModule.register({ defaultStrategy: 'jwt' }),
-    //     JwtModule.registerAsync({
-    //       imports: [ConfigModule],
-    //       useFactory: async (configService: ConfigService) => {
-    //         return {
-    //           secret: configService.get<string>('JWT_SECRET'),
-    //           signOptions: {
-    //             expiresIn: 3600,
-    //           },
-    //         };
-    //       },
-    //       inject: [ConfigService],
-    //     }),
-    //   ],
-    //   providers: [
-    //     AuthService,
-    //     UsersService,
-    //     ConfigService,
-    //     UserRepository,
-    //     JwtStrategy,
-    //   ],
-    // }).compile();
-    // authService = module.get<AuthService>(AuthService);
-    // userService = module.get<UsersService>(UsersService);
-    // jwtService = module.get<JwtService>(JwtService);
+    const module: TestingModule = await Test.createTestingModule({
+      imports: [
+        PassportModule.register({ defaultStrategy: 'jwt' }),
+        JwtModule.registerAsync({
+          imports: [ConfigModule],
+          useFactory: async (configService: ConfigService) => {
+            return {
+              secret: configService.get<string>('JWT_SECRET'),
+              signOptions: {
+                expiresIn: 3600,
+              },
+            };
+          },
+          inject: [ConfigService],
+        }),
+      ],
+      providers: [
+        AuthService,
+        UsersService,
+        ConfigService,
+        UserRepository,
+        JwtStrategy,
+      ],
+    }).compile();
+
+    authService = module.get<AuthService>(AuthService);
+    userService = module.get<UsersService>(UsersService);
+    jwtService = module.get<JwtService>(JwtService);
   });
 
   describe('login', () => {
-    // beforeEach(() => {
+    it('throw unauthorized exception if invalid credentials', async () => {
+      userService.validateUser = jest.fn().mockResolvedValue(null);
 
-    // })
-
-    it('validate user', async () => {
-      // const validatedUser = jest.fn();
-      // validatedUser.mockResolvedValue(undefined);
-      // await expect(
-      //   await authService.login(mockedUserCredentials),
-      // ).resolves.not.toThrow();
+      expect(authService.login(mockedUserCredentials)).rejects.toThrow(
+        UnauthorizedException,
+      );
     });
 
-    it('throws an unauthorized exception if user does not exist', async () => {
-      //
-    });
+    it('returns user object if valid credentials', async () => {
+      userService.validateUser = jest
+        .fn()
+        .mockResolvedValue({ ...mockedUserCredentials, id: '1' });
+      jwtService.sign = jest.fn().mockReturnValue('testToken');
 
-    it('returns access token if authenicated', async () => {
-      //
+      const res = await authService.login(mockedUserCredentials);
+
+      expect(userService.validateUser).toHaveBeenCalledWith(
+        mockedUserCredentials,
+      );
+      expect(jwtService.sign).toHaveBeenCalledWith({
+        username: mockedUserCredentials.username,
+      });
+      expect(res).toEqual({ id: '1', accessToken: 'testToken' });
     });
   });
 });
