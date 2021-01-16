@@ -95,8 +95,19 @@ describe('BobaService', () => {
     });
 
     describe('getManyBobas', () => {
-      it('', async () => {
-        //
+      it(`return bobas by id's provided`, async () => {
+        bobaRepository.find.mockResolvedValue([mockBoba]);
+
+        const res = await bobaService.getManyBobas(['12-12', '21-21']);
+
+        expect(bobaRepository.find).toHaveBeenCalledWith({
+          where: {
+            id: {
+              $in: ['12-12', '21-21'],
+            },
+          },
+        });
+        expect(res).toEqual([mockBoba]);
       });
     });
   });
